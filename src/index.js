@@ -1,25 +1,31 @@
 const fs = require('fs');
+const trataErros = require('./erros/funcoesErro.js');
 
 const caminhoArquivo = process.argv;
 const link = caminhoArquivo[2];
 
 fs.readFile(link, 'utf-8', (erro, texto) => {
-  quebraEmParagrafos(texto);
+  try {
+    if (erro) throw erro;
+    contaPalavras(texto);
+  } catch (erro) {
+    trataErros(erro);
+  }
 });
 
-//criar array com as palavras
-//contar as ocorrencias
-//montar um objeto com o resultado
-
-function quebraEmParagrafos(texto) {
-  const paragrafos = texto.toLowerCase().split('\n');
-  //flatMAp esta verificando se o paragrafo esta vazio e fazendo um for each com o map retoranando um array 
+function contaPalavras(texto) {
+  const paragrafos = extraiParagrafos(texto);
+  //flatMAp esta verificando se o paragrafo esta vazio e fazendo um for each com o map retoranando um array
   const contagem = paragrafos.flatMap((paragrafo) => {
     if (!paragrafo) return [];
     return verificaPalavrasDuplicadas(paragrafo);
   });
 
   console.log(contagem);
+}
+
+function extraiParagrafos(texto) {
+  return texto.toLowerCase().split('\n');
 }
 
 function limpaPalavras(palavra) {
